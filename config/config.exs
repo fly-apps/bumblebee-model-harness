@@ -26,6 +26,9 @@ config :harness, HarnessWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :harness, Harness.Mailer, adapter: Swoosh.Adapters.Local
 
+# Bumblebee
+config :nx, default_backend: EXLA.Backend
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",

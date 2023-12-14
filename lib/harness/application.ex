@@ -15,9 +15,17 @@ defmodule Harness.Application do
       # Start Finch
       {Finch, name: Harness.Finch},
       # Start the Endpoint (http/https)
-      HarnessWeb.Endpoint
-      # Start a worker by calling: Harness.Worker.start_link(arg)
-      # {Harness.Worker, arg}
+      HarnessWeb.Endpoint,
+
+      # Delayed servings config
+      # -----
+      # {Harness.DelayedServing,
+      #  serving_name: Llama2ChatWithFunctionsModel,
+      #  serving_fn: fn -> Harness.Llama2ChatFunctions.serving() end},
+      {Harness.DelayedServing,
+       serving_name: ZephyrModel, serving_fn: fn -> Harness.Zephyr.serving() end},
+      # {Harness.DelayedServing,
+      #  serving_name: MistralInstructModel, serving_fn: fn -> Harness.MistralInstruct.serving() end}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
