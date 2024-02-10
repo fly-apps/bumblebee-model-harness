@@ -23,10 +23,10 @@ In short, it's for the following reasons:
 - Download the project
 - Follow the [Fly.io GPUs Quickstart](https://fly.io/docs/gpus/gpu-quickstart/) and refer to [Getting Started with Fly GPUs](https://fly.io/docs/gpus/getting-started-gpus/)
   - Your Fly.io organization needs to be GPU enabled
-- `fly apps create --generate-name --org fly-gpus` or provide the name you want with `--name my-desired-name`
+- `fly apps create --generate-name --org your-org-with-gpus` or provide the name you want with `--name my-desired-name`
 - Copy the new name to the `fly.toml` file in `app` and `PHX_HOST`
 - Change the `RELEASE_COOKIE` value as desired. The value must match for the client application.
-- Deploy to the desired region: `fly deploy --region ord`. Ensure the region has the desired GPUs.
+- Deploy to the desired region: `fly deploy --region desired-region`. Ensure the region has the desired GPUs.
 - Set the `SECRET_KEY_BASE`
 ```
 $ mix phx.gen.secret
