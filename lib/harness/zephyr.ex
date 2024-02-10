@@ -1,7 +1,11 @@
 defmodule Harness.Zephyr do
-  # https://zephyr-7b.net/
-  # https://github.com/toranb/pgvector-search/blob/mistral7b/lib/search_web/live/page_live.ex#L44
-  # https://huggingface.co/HuggingFaceH4/zephyr-7b-beta
+ @moduledoc """
+  Define the Zephyr 7B serving.
+
+  - https://zephyr-7b.net/
+  - https://huggingface.co/HuggingFaceH4/zephyr-7b-beta
+  """
+
   def serving() do
     mistral = {:hf, "HuggingFaceH4/zephyr-7b-beta"}
 

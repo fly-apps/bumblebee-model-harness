@@ -7,6 +7,10 @@ import Config
 # before starting your production server.
 config :harness, HarnessWeb.Endpoint, cache_static_manifest: "priv/static/cache_manifest.json"
 
+# For prod, disable the in-place console progress bar. It breaks the IO
+# output in production environments causing the server to crash.
+config :bumblebee, progress_bar_enabled: false
+
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: Harness.Finch
 

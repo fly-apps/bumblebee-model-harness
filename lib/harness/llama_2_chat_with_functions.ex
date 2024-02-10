@@ -1,5 +1,10 @@
 defmodule Harness.Llama2ChatFunctions do
-  # https://huggingface.co/Trelis/Llama-2-7b-chat-hf-function-calling-v3
+  @moduledoc """
+  Define the Llama 2 serving.
+
+  - https://huggingface.co/Trelis/Llama-2-7b-chat-hf-function-calling-v3
+  """
+
   def serving() do
     llama_2 = {:hf, "Trelis/Llama-2-7b-chat-hf-function-calling-v3"}
 

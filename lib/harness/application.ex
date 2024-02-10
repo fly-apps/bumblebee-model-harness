@@ -17,15 +17,20 @@ defmodule Harness.Application do
       # Start the Endpoint (http/https)
       HarnessWeb.Endpoint,
 
-      # Delayed servings config
+      # Delayed servings config. Select the model to host.
+      #
+      # Client must use the serving name specified here.
       # -----
+
       # {Harness.DelayedServing,
       #  serving_name: Llama2ChatWithFunctionsModel,
       #  serving_fn: fn -> Harness.Llama2ChatFunctions.serving() end},
-      {Harness.DelayedServing,
-       serving_name: ZephyrModel, serving_fn: fn -> Harness.Zephyr.serving() end},
+
       # {Harness.DelayedServing,
-      #  serving_name: MistralInstructModel, serving_fn: fn -> Harness.MistralInstruct.serving() end}
+      #  serving_name: ZephyrModel, serving_fn: fn -> Harness.Zephyr.serving() end},
+
+      {Harness.DelayedServing,
+       serving_name: MistralInstructModel, serving_fn: fn -> Harness.MistralInstruct.serving() end}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

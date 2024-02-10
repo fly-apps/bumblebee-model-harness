@@ -1,8 +1,12 @@
 defmodule Harness.MistralInstruct do
-  # https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1
-  # https://docs.mistral.ai/
+  @moduledoc """
+  Define the Mistral 7B serving.
+
+  - https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1
+  - https://docs.mistral.ai/
+  """
   def serving() do
-    mistral = {:hf, "mistralai/Mistral-7B-Instruct-v0.1"}
+    mistral = {:hf, "mistralai/Mistral-7B-Instruct-v0.2"}
 
     {:ok, spec} =
       Bumblebee.load_spec(mistral,
