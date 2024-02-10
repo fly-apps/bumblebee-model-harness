@@ -43,7 +43,7 @@ The `fly.toml` file has the `auto_stop_machines = false` setting. This is helpfu
 The VM size is set setting is `size = "a100-40gb"`. This ensures the machine we get has the NVidia A100 GPU.
 
 
-## How to know it's working or what isn't
+## Troubleshooting and diagnosis tips
 
 To test and verify that you've successfully deployed the application to a
 machine with GPU access and that your application has all the necessary support
