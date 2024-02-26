@@ -1,5 +1,5 @@
 defmodule Harness.Zephyr do
- @moduledoc """
+  @moduledoc """
   Define the Zephyr 7B serving.
 
   - https://zephyr-7b.net/
@@ -7,20 +7,13 @@ defmodule Harness.Zephyr do
   """
 
   def serving() do
-    mistral = {:hf, "HuggingFaceH4/zephyr-7b-beta"}
+    zephyr = {:hf, "HuggingFaceH4/zephyr-7b-beta"}
 
-    {:ok, spec} =
-      Bumblebee.load_spec(mistral,
-        module: Bumblebee.Text.Mistral,
-        architecture: :for_causal_language_modeling
-      )
+    {:ok, model_info} = Bumblebee.load_model(zephyr, type: :bf16, backend: EXLA.Backend)
 
-    {:ok, model_info} = Bumblebee.load_model(mistral, spec: spec)
+    {:ok, tokenizer} = Bumblebee.load_tokenizer(zephyr)
 
-    {:ok, tokenizer} = Bumblebee.load_tokenizer(mistral, module: Bumblebee.Text.LlamaTokenizer)
-
-    {:ok, generation_config} =
-      Bumblebee.load_generation_config(mistral, spec_module: Bumblebee.Text.Mistral)
+    {:ok, generation_config} = Bumblebee.load_generation_config(zephyr)
 
     generation_config =
       Bumblebee.configure(generation_config,

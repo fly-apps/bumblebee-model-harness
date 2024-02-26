@@ -8,18 +8,11 @@ defmodule Harness.Llama2ChatFunctions do
   def serving() do
     llama_2 = {:hf, "Trelis/Llama-2-7b-chat-hf-function-calling-v3"}
 
-    {:ok, spec} =
-      Bumblebee.load_spec(llama_2,
-        module: Bumblebee.Text.Llama,
-        architecture: :for_causal_language_modeling
-      )
+    {:ok, model_info} = Bumblebee.load_model(llama_2, type: :bf16, backend: EXLA.Backend)
 
-    {:ok, model_info} = Bumblebee.load_model(llama_2, spec: spec)
+    {:ok, tokenizer} = Bumblebee.load_tokenizer(llama_2)
 
-    {:ok, tokenizer} = Bumblebee.load_tokenizer(llama_2, module: Bumblebee.Text.LlamaTokenizer)
-
-    {:ok, generation_config} =
-      Bumblebee.load_generation_config(llama_2, spec_module: Bumblebee.Text.Llama)
+    {:ok, generation_config} = Bumblebee.load_generation_config(llama_2)
 
     generation_config =
       Bumblebee.configure(generation_config,
