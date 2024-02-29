@@ -7,7 +7,9 @@ defmodule Harness.Zephyr do
   """
 
   def serving() do
-    zephyr = {:hf, "HuggingFaceH4/zephyr-7b-beta"}
+    # NOTE: After the model is downloaded, you can toggle to `offline: true` to
+    #       only use the locally cached files and not reach out to HF at all.
+    zephyr = {:hf, "HuggingFaceH4/zephyr-7b-beta", offline: false}
 
     {:ok, model_info} = Bumblebee.load_model(zephyr, type: :bf16, backend: EXLA.Backend)
 
@@ -24,7 +26,7 @@ defmodule Harness.Zephyr do
     Bumblebee.Text.generation(model_info, tokenizer, generation_config,
       compile: [batch_size: 1, sequence_length: 4096],
       stream: true,
-      # stream: false,
+      stream_done: true,
       defn_options: [compiler: EXLA, lazy_transfers: :never]
       # preallocate_params: true
     )
