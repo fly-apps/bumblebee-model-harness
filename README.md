@@ -81,6 +81,6 @@ making calls against.
 The attached volume caches the download so the local files are used the next
 time the harness application is started, skipping the lengthy download step.
 
-## Getting the server node name
+## Clustering your local app to the harness app on Fly.io
 
-There are several ways to get the server node name. See [the article](with-link-to-part) for details.
+This documentation walks through the process: [Easy Clustering from Home to Fly.io](https://fly.io/docs/elixir/advanced-guides/clustering-from-home-to-your-app-in-fly/)
