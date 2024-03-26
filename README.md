@@ -14,7 +14,7 @@ In short, it's for the following reasons:
 
 - keep the benefits of rapid, local development
 - get access to large models, machines and GPUs
-- shut down large, expensive machines when not in use
+- shut down machines when not in use
 - enables developing customized ML/AI code without compromising on the dev tooling or speed of development
 - bragging rights
 
