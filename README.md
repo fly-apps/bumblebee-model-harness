@@ -1,6 +1,6 @@
 # Harness
 
-This is a minimal Elixir Phoenix web application that only exists to host a Machine Learning model on a Fly.io Machine with an attached GPU. The purpose is to make the model and GPU accessible to a separate Elixir application that is clustered with this app. In this way, this app is just a harness for the following:
+This is a minimal Elixir Phoenix web application that only exists to host a pre-trained Machine Learning model on a Fly.io machine with an attached GPU. The purpose is to make the model and GPU accessible to a separate Elixir application that is clustered with this app. In this way, this app is just a harness for the following:
 
 - Fetching the ML model (from HuggingFace)
 - Caching the downloaded model on a volume attached to the machine
