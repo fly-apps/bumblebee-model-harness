@@ -38,7 +38,7 @@ $ fly secrets set SECRET_KEY_BASE=randomlyGeneratedText
 
 Optional updates:
 
-The `fly.toml` file has the `auto_stop_machines = false` setting. This is helpful when getting started so the machine doesn't get shutdown while the model is being downloaded. Once the machine is setup, feel free to playing with this value to determine what works best for your needs.
+The `fly.toml` file has the `auto_stop_machines = false` setting. This is helpful when getting started so the machine doesn't get shutdown while the model is being downloaded. Once the machine is setup, feel free to change this value if that works best for your needs.
 
 The VM size is set setting is `size = "a100-40gb"`. This ensures the machine we get has the NVidia A100 GPU.
 
