@@ -20,7 +20,7 @@ In short, it's for the following reasons:
 
 ## Deploy this for yourself
 
-- Download the project
+- Download this project
 - Follow the [Fly.io GPUs Quickstart](https://fly.io/docs/gpus/gpu-quickstart/) and refer to [Getting Started with Fly GPUs](https://fly.io/docs/gpus/getting-started-gpus/)
   - Your Fly.io organization needs to be GPU enabled
 - `fly apps create --generate-name --org your-org-with-gpus` or provide the name you want with `--name my-desired-name`
