@@ -42,7 +42,7 @@ The `fly.toml` file has the `auto_stop_machines = false` setting. This is helpfu
 
 The VM size is set setting is `size = "a100-40gb"`. This ensures the machine we get has the NVidia A100 GPU.
 
-## Selecting and starting a ready-to-go model
+## Selecting a ready-to-go model
 
 Three LLMs are built-in and ready to go. Select the model to serve and enable it. Depending on the hardware selected and the size of the model, hosting multiple models on the same GPU may not be practical or possible.
 
@@ -54,7 +54,7 @@ Select a single model to enable, deploy the harness application, and develop aga
 - [Zephyr 7B](https://zephyr-7b.net/) - `Harness.Zephyr`
 - [Mistral 7B](https://docs.mistral.ai/) - `Harness.MistralInstruct`
 
-To select a model, uncomment it in `lib/harness/application.ex` and comment out the unused ones. This selects which serving to create and start.
+To select a model, uncomment it in `lib/harness/application.ex` and comment out the unused ones. This selects which serving to create and start. The following is an example of serving the Llama 2 model.
 
 ```elixir
 {Harness.DelayedServing,
@@ -62,9 +62,7 @@ To select a model, uncomment it in `lib/harness/application.ex` and comment out 
   serving_fn: fn -> Harness.Llama2Chat.serving() end},
 ```
 
-In this example, the `serving_name` of `Llama2ChatModel` is the name of the serving to address in the client application.
-
-In the client, it looks like this:
+In this example, the `serving_name` of `Llama2ChatModel` is the name of the serving to address in the client application. Name it whatever you like! It is the name used in the client when calling using the serving. In the client, it looks like this:
 
 ```elixir
 Nx.Serving.batched_run(Llama2ChatModel, "Say hello.")
