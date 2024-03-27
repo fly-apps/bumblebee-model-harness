@@ -42,6 +42,37 @@ The `fly.toml` file has the `auto_stop_machines = false` setting. This is helpfu
 
 The VM size is set setting is `size = "a100-40gb"`. This ensures the machine we get has the NVidia A100 GPU.
 
+## Selecting and starting a ready-to-go model
+
+Three LLMs are built-in and ready to go. Select the model to serve and enable it. Depending on the hardware selected and the size of the model, hosting multiple models on the same GPU may not be practical or possible.
+
+Select a single model to enable, deploy the harness application, and develop against it.
+
+**Models:**
+
+- [Llama2 7B](https://llama.meta.com/llama2/) - `Harness.Llama2Chat`
+- [Zephyr 7B](https://zephyr-7b.net/) - `Harness.Zephyr`
+- [Mistral 7B](https://docs.mistral.ai/) - `Harness.MistralInstruct`
+
+To select a model, uncomment it in `lib/harness/application.ex` and comment out the unused ones. This selects which serving to create and start.
+
+```elixir
+{Harness.DelayedServing,
+  serving_name: Llama2ChatModel,
+  serving_fn: fn -> Harness.Llama2Chat.serving() end},
+```
+
+In this example, the `serving_name` of `Llama2ChatModel` is the name of the serving to address in the client application.
+
+In the client, it looks like this:
+
+```elixir
+Nx.Serving.batched_run(Llama2ChatModel, "Say hello.")
+```
+
+The harness application uses a `DelayedServing` helper to start the model. Downloading and loading a large model takes time. It happens in the application startup process, which if done synchronously, makes the application unresponsive to health check. Fly will kill the app thinking it's unresponsive... which it is.
+
+The `DelayedServing` makes the loading asynchronous so the application starts quickly and is responsive while the larger loading task continues.
 
 ## Troubleshooting and diagnosis tips
 
