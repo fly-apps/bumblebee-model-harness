@@ -103,12 +103,9 @@ several minutes to download.
 If the Fly.io volume is setup correctly and available to the machine, the files
 are downloaded to `/data/cache/bumblebee/huggingface/`.
 
-Before the Nx serving can be activated, the model must be downloaded fully, loaded
-into RAM, then moved to the GPU. Once complete, the serving is available for
-making calls against.
+Before the Nx serving can be activated, the model must be fully downloaded, loaded into RAM, then moved to the GPU. Once complete, the serving is available for making calls against.
 
-The attached volume caches the download so the local files are used the next
-time the harness application is started, skipping the lengthy download step.
+The attached volume caches the download so the local files are used the next time the harness application is started, skipping the lengthy download step.
 
 ## Clustering your local app to the harness app on Fly.io
 
