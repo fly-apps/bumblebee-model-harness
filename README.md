@@ -44,7 +44,7 @@ The VM size is set setting is `size = "a100-40gb"`. This ensures the machine we 
 
 ## Selecting a ready-to-go model
 
-Three LLMs are built-in and ready to go. Select the model to serve and enable it. Depending on the hardware selected and the size of the model, hosting multiple models on the same GPU may not be practical or possible.
+Three LLMs are built-in and ready to go. Select the model to serve and enable it. Depending on the available hardware and the size of the model, hosting multiple models on the same GPU may not be practical or possible.
 
 Select a single model to enable, deploy the harness application, and develop against it.
 
