@@ -23,8 +23,8 @@ defmodule Harness.Application do
       # -----
 
       {Harness.DelayedServing,
-       serving_name: Llama2ChatWithFunctionsModel,
-       serving_fn: fn -> Harness.Llama2ChatFunctions.serving() end},
+       serving_name: Llama2ChatModel,
+       serving_fn: fn -> Harness.Llama2Chat.serving() end},
 
       # {Harness.DelayedServing,
       #  serving_name: ZephyrModel, serving_fn: fn -> Harness.Zephyr.serving() end},

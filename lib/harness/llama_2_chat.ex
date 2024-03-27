@@ -1,4 +1,4 @@
-defmodule Harness.Llama2ChatFunctions do
+defmodule Harness.Llama2Chat do
   @moduledoc """
   Define the Llama 2 serving.
 
