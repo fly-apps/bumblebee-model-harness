@@ -12,6 +12,7 @@ kill_signal = "SIGTERM"
 [[mounts]]
   source = "models"
   destination = "/data"
+  initial_size = "100gb"
   auto_extend_size_threshold = 0
 
 [http_service]
