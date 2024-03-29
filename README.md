@@ -1,6 +1,6 @@
 # Harness
 
-[Accompanying blog post "Easy at-home AI with Bumblebee and Fly GPUs"](https://fly.io/phoenix-files/clustering-elixir-from-laptop-to-cloud/)
+See the accompanying blog post [Easy at-home AI with Bumblebee and Fly GPUs](https://fly.io/phoenix-files/clustering-elixir-from-laptop-to-cloud/)
 
 This is a minimal Elixir Phoenix web application that only exists to host a pre-trained Machine Learning model on a Fly.io machine with an attached GPU. The purpose is to make the model and GPU accessible to a separate Elixir application that is clustered with this app. In this way, this app is just a harness for the following:
 
