@@ -1,5 +1,7 @@
 # Harness
 
+[Accompanying blog post "Easy at-home AI with Bumblebee and Fly GPUs"](https://fly.io/phoenix-files/clustering-elixir-from-laptop-to-cloud/)
+
 This is a minimal Elixir Phoenix web application that only exists to host a pre-trained Machine Learning model on a Fly.io machine with an attached GPU. The purpose is to make the model and GPU accessible to a separate Elixir application that is clustered with this app. In this way, this app is just a harness for the following:
 
 - Fetching the ML model (from HuggingFace)
@@ -8,7 +10,7 @@ This is a minimal Elixir Phoenix web application that only exists to host a pre-
 
 ## What's the advantage?
 
-For a more detailed look at the advantages of doing this, please refer to [this article](!!!!).
+For a more detailed look at the advantages of doing this, please refer to [this article](https://fly.io/phoenix-files/clustering-elixir-from-laptop-to-cloud/).
 
 In short, it's for the following reasons:
 
@@ -20,23 +22,20 @@ In short, it's for the following reasons:
 
 ## Deploy this for yourself
 
-- Download this project
 - Follow the [Fly.io GPUs Quickstart](https://fly.io/docs/gpus/gpu-quickstart/) and refer to [Getting Started with Fly GPUs](https://fly.io/docs/gpus/getting-started-gpus/)
-  - Your Fly.io organization needs to be GPU enabled
-- `fly apps create --generate-name --org your-org-with-gpus` or provide the name you want with `--name my-desired-name`
-- Copy the new name to the `fly.toml` file in `app` and `PHX_HOST`
-- Change the `RELEASE_COOKIE` value as desired. The value must match for the client application.
-- Deploy to the desired region: `fly deploy --region desired-region`. Ensure the region has the desired GPUs.
-- Set the `SECRET_KEY_BASE`
-```
-$ mix phx.gen.secret
-randomlyGeneratedText
+- Clone this project
+- Change the app name in `fly.toml` to one you like
+- `fly launch` and say "yes" to copy the config.
 
-$ fly secrets set SECRET_KEY_BASE=randomlyGeneratedText
-```
-- `fly apps open` or `fly logs`
+This builds the Dockerfile image, deploys it, and starts the selected serving. For me, the process of starting the serving for a new Llama 2 model took about 4 minutes to download and start.
 
-Optional updates:
+Track the logs if you like:
+
+```
+fly logs
+```
+
+**Optional updates:**
 
 The `fly.toml` file has the `auto_stop_machines = false` setting. This is helpful when getting started so the machine doesn't get shutdown while the model is being downloaded. Once the machine is setup, feel free to change this value if that works best for your needs.
 
