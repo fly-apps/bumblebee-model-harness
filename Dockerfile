@@ -1,41 +1,45 @@
-# Find eligible builder and runner images on Docker Hub. We use Ubuntu/Debian
-# instead of Alpine to avoid DNS resolution issues in production.
+# Based on:
 #
-# https://hub.docker.com/r/hexpm/elixir/tags?page=1&name=ubuntu
-# https://hub.docker.com/_/ubuntu?tab=tags
-#
-# This file is based on these images:
-#
-#   - https://hub.docker.com/r/hexpm/elixir/tags - for the build image
-#   - https://hub.docker.com/_/debian?tab=tags&page=1&name=bullseye-20230227-slim - for the release image
-#   - https://pkgs.org/ - resource for finding needed packages
-#   - Ex: hexpm/elixir:1.14.3-erlang-25.3-debian-bullseye-20230227-slim
-#
-ARG ELIXIR_VERSION=1.15.7
-ARG OTP_VERSION=26.1.2
-ARG DEBIAN_VERSION=bullseye-20230612-slim
+# - https://hub.docker.com/r/hexpm/elixir/tags
+# - https://hub.docker.com/r/nvidia/cuda/tags
+# - https://github.com/livebook-dev/livebook/blob/main/docker/base/elixir-cuda.dockerfile
+# - https://wiki.ubuntu.com/Releases
 
-ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
-ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
+ARG UBUNTU_VERSION=22.04
+ARG UBUNTU_NAMED_VERSION=jammy-20240227
+ARG CUDA_VERSION=12.4.1
+ARG ELIXIR_VERSION=1.16.2
+ARG ERLANG_VERSION=26.2.4
 
-FROM ${BUILDER_IMAGE} as builder
+# Target the CUDA build image
+ARG BASE_CUDA_DEV_CONTAINER=nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
+# NOTE: TRYING TO GET IT WORKING. DON'T KEEP "devel" VERSION FOR RUNTIME?
+ARG BASE_CUDA_RUNTIME_CONTAINER=nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
 
-# install build dependencies
-RUN apt-get update -y && apt-get install -y build-essential git curl wget \
-    && apt-get clean && rm -f /var/lib/apt/lists/*_*
+FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${ERLANG_VERSION}-ubuntu-${UBUNTU_NAMED_VERSION} AS elixir
 
-# Add the repository for the Nvidia CUDA
-# Import the Nvidia repository GPG key
-RUN apt update -q && apt install -y ca-certificates wget && \
-    wget -qO /cuda-keyring.deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
-    dpkg -i /cuda-keyring.deb && apt update -q
+FROM ${BASE_CUDA_DEV_CONTAINER} as builder
 
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    apt-get install -y build-essential git git curl wget cmake openssl libncurses5 locales && \
+    apt-get clean && rm -f /var/lib/apt/lists/*_*
 
-# Install nvidia GPU support
-RUN apt-get install -y cuda-nvcc-12-2 libcublas-12-2 libcudnn8
+# Elixir: We copy the top-level directory first to preserve symlinks in /usr/local/bin
+COPY --from=elixir /usr/local /usr/ELIXIR_LOCAL
+
+RUN cp -r /usr/ELIXIR_LOCAL/lib/* /usr/local/lib && \
+  cp -r /usr/ELIXIR_LOCAL/bin/* /usr/local/bin && \
+  rm -rf /usr/ELIXIR_LOCAL
 
 # prepare build dir
 WORKDIR /app
+
+# Set the locale
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 # install hex + rebar
 RUN mix local.hex --force && \
@@ -79,32 +83,19 @@ RUN mix release
 
 # start a new build stage so that the final image will only contain
 # the compiled release and other runtime necessities
-FROM ${RUNNER_IMAGE}
+FROM ${BASE_CUDA_RUNTIME_CONTAINER}
 
 RUN apt-get update -y && \
   apt-get install -y libstdc++6 openssl libncurses5 locales ca-certificates \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
-# Nvidia stuff
-RUN apt update -q && apt install -y ca-certificates wget && \
-    wget -qO /cuda-keyring.deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
-    dpkg -i /cuda-keyring.deb && apt update -q
-
-
-# Nvidia support in runtime layer
-RUN apt-get install -y --no-install-recommends cuda-nvcc-12-2 libcublas-12-2 libcudnn8
-# Copy over needed nvidia support
-# COPY --from=builder /usr/local/bin/deviceQuery /usr/local/bin/deviceQuery
-
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
-
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 WORKDIR "/app"
-# RUN chown nobody /app
 
 # set runner ENV
 ENV MIX_ENV="prod"
@@ -113,12 +104,11 @@ ENV MIX_ENV="prod"
 ENV XLA_TARGET="cuda120"
 ENV BUMBLEBEE_CACHE_DIR="/data/cache/bumblebee"
 ENV XLA_CACHE_DIR="/data/cache/xla"
-# NOTE: This seems to be causing a crash loop on boot.
-# ENV ELIXIR_ERL_OPTIONS = "-proto_dist inet6_tcp +sssdio 128"
+
+ENV ECTO_IPV6 true
+ENV ERL_AFLAGS "-proto_dist inet6_tcp"
 
 # Only copy the final release from the build stage
 COPY --from=builder /app/_build/${MIX_ENV}/rel/harness ./
-
-# USER nobody
 
 CMD ["/app/bin/server"]
