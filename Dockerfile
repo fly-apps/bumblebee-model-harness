@@ -13,9 +13,9 @@ ARG ERLANG_VERSION=26.2.4
 
 # Target the CUDA build image
 ARG BASE_CUDA_DEV_CONTAINER=nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
-# NOTE: TRYING TO GET IT WORKING. DON'T KEEP "devel" VERSION FOR RUNTIME?
-ARG BASE_CUDA_RUNTIME_CONTAINER=nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
+ARG BASE_CUDA_RUNTIME_CONTAINER=nvidia/cuda:${CUDA_VERSION}-runtime-ubuntu${UBUNTU_VERSION}
 
+# Use the Elixir container for our build tools
 FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${ERLANG_VERSION}-ubuntu-${UBUNTU_NAMED_VERSION} AS elixir
 
 FROM ${BASE_CUDA_DEV_CONTAINER} as builder
@@ -104,9 +104,6 @@ ENV MIX_ENV="prod"
 ENV XLA_TARGET="cuda120"
 ENV BUMBLEBEE_CACHE_DIR="/data/cache/bumblebee"
 ENV XLA_CACHE_DIR="/data/cache/xla"
-
-ENV ECTO_IPV6 true
-ENV ERL_AFLAGS "-proto_dist inet6_tcp"
 
 # Only copy the final release from the build stage
 COPY --from=builder /app/_build/${MIX_ENV}/rel/harness ./
