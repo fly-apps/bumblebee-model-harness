@@ -92,28 +92,25 @@ If the required NVidia libraries and hardware are in place, then the `nvidia-smi
 | Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
 |                                         |                      |               MIG M. |
 |=========================================+======================+======================|
-|   0  NVIDIA A100-PCIE-40GB          Off | 00000000:00:06.0 Off |                   On |
-| N/A   38C    P0              39W / 250W |      0MiB / 40960MiB |     N/A      Default |
-|                                         |                      |              Enabled |
+|   0  NVIDIA A100-PCIE-40GB          Off | 00000000:00:06.0 Off |                    0 |
+| N/A   34C    P0              38W / 250W |  36735MiB / 40960MiB |      0%      Default |
+|                                         |                      |             Disabled |
 +-----------------------------------------+----------------------+----------------------+
-
-+---------------------------------------------------------------------------------------+
-| MIG devices:                                                                          |
-+------------------+--------------------------------+-----------+-----------------------+
-| GPU  GI  CI  MIG |                   Memory-Usage |        Vol|      Shared           |
-|      ID  ID  Dev |                     BAR1-Usage | SM     Unc| CE ENC DEC OFA JPG    |
-|                  |                                |        ECC|                       |
-|==================+================================+===========+=======================|
-|  No MIG devices found                                                                 |
-+---------------------------------------------------------------------------------------+
 
 +---------------------------------------------------------------------------------------+
 | Processes:                                                                            |
 |  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
 |        ID   ID                                                             Usage      |
 |=======================================================================================|
-|  No running processes found                                                           |
+|    0   N/A  N/A       492      C   /app/erts-14.2.4/bin/beam.smp                 0MiB |
 +---------------------------------------------------------------------------------------+
+```
+
+There should not be a "MIG" section above the "Processes" one. A [longer-term fix to fully reset the GPUs configuration is coming](https://community.fly.io/t/getting-error-when-trying-to-run-llama2chatmodel-in-gpu-machine/19127). As a short-term workaround, the following command can be run and restart or redeploy the application.
+
+```
+$ fly ssh console
+nvidia-smi -mig 0
 ```
 
 The next layer to test is that Elixir has access to the GPU. For that, run the following:
