@@ -79,6 +79,44 @@ for taking advantage of the GPU, do the following:
 
 ```
 $ fly ssh console
+nvidia-smi
+```
+
+If the required NVidia libraries and hardware are in place, then the `nvidia-smi` tool should output a table with the information like this:
+
+```
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 545.23.08              Driver Version: 545.23.08    CUDA Version: 12.3     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100-PCIE-40GB          Off | 00000000:00:06.0 Off |                    0 |
+| N/A   34C    P0              38W / 250W |  36735MiB / 40960MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|    0   N/A  N/A       492      C   /app/erts-14.2.4/bin/beam.smp                 0MiB |
++---------------------------------------------------------------------------------------+
+```
+
+There should not be a "MIG" section above the "Processes" one. A [longer-term fix to fully reset the GPUs configuration is coming](https://community.fly.io/t/getting-error-when-trying-to-run-llama2chatmodel-in-gpu-machine/19127). As a short-term workaround, the following command can be run and restart or redeploy the application.
+
+```
+$ fly ssh console
+nvidia-smi -mig 0
+```
+
+The next layer to test is that Elixir has access to the GPU. For that, run the following:
+
+```
+$ fly ssh console
 # bin/harness remote
 iex> Harness.DelayedServing.has_gpu_access?()
 true
